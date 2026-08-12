@@ -1,0 +1,36 @@
+name: WOG Equalizer APK Build
+
+on:
+  push:
+    branches: [ "main" ] # main బ్రాంచ్‌కి పుష్ చేసినప్పుడు ట్రిగ్గర్ అవుతుంది
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17' # Android build కి Java 17 అవసరం
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: WOG-Equalizer-Release-APK
+          path: build/app/outputs/flutter-apk/app-release.apk
